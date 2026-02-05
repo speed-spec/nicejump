@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Now加速安全访问检查</title>
+  <style>
+    :root {
+      /* 极简配色 */
+      --bg-color: #f5f5f7;       
+      --text-primary: #1d1d1f;   
+      --text-secondary: #86868b; 
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--bg-color);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+      text-align: center;
+      overflow: hidden;
+      position: relative;
+      -webkit-font-smoothing: antialiased;
+    }
+
+
+
+    /* --- 新版：8圆点·大间距加载器 --- */
+    .spinner {
+      color: #999999; 
+      position: relative;
+      display: inline-block;
+      /* 修改点1：整体尺寸从 64px 加大到 100px */
+      width: 100px;
+      height: 100px;
+      /* 保持间距 */
+      margin-bottom: 30px; 
+    }
+
+    .spinner div {
+      /* 修改点2：旋转中心跟随整体尺寸调整为 50px */
+      transform-origin: 50px 50px;
+      animation: spinner-fade 1.2s linear infinite;
+    }
+
+    .spinner div::after {
+      content: " ";
+      display: block;
+      position: absolute;
+      /* 修改点3：圆点位置微调，创造更大间距 */
+      top: 6px;       /* 离外圈的距离 */
+      left: 40.5px;   /* (100 - 19) / 2 = 40.5，确保水平居中 */
+      width: 19px;    /* 圆点稍微变大一点点 */
+      height: 19px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* 8个点的位置 */
+    .spinner div:nth-child(1) { transform: rotate(0deg); animation-delay: -1.1s; }
+    .spinner div:nth-child(2) { transform: rotate(45deg); animation-delay: -1.0s; }
+    .spinner div:nth-child(3) { transform: rotate(90deg); animation-delay: -0.9s; }
+    .spinner div:nth-child(4) { transform: rotate(135deg); animation-delay: -0.8s; }
+    .spinner div:nth-child(5) { transform: rotate(180deg); animation-delay: -0.7s; }
+    .spinner div:nth-child(6) { transform: rotate(225deg); animation-delay: -0.6s; }
+    .spinner div:nth-child(7) { transform: rotate(270deg); animation-delay: -0.5s; }
+    .spinner div:nth-child(8) { transform: rotate(315deg); animation-delay: -0.4s; }
+
+    @keyframes spinner-fade {
+      0% { opacity: 1; }
+      100% { opacity: 0.2; }
+    }
+    /* ------------------------------------- */
+
+    /* 文字排版优化 */
+    .main-text {
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      color: var(--text-primary);
+      margin: 0;
+      line-height: 1.2;
+    }
+
+    .sub-text {
+      font-size: 17px;
+      color: var(--text-secondary);
+      margin-top: 16px; 
+      font-weight: 400;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 50px;
+      text-align: center;
+      width: 100%;
+    }
+    .company-name {
+      font-size: 13px; font-weight: 500; color: #999;
+      margin-bottom: 8px; letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .copyright { font-size: 13px; color: #aaa; }
+
+    /* 移动端适配 */
+    @media (max-width: 600px) {
+      .footer-bg { background-size: auto 100%; }
+      .main-text { font-size: 24px; }
+      /* 手机上稍微缩小一点，避免太大 */
+      .spinner { transform: scale(0.9); }
+    }
+  </style>
+</head>
+<body>
+  <div class="footer-bg"></div>
+
+  <div class="spinner">
+    <div></div><div></div><div></div><div></div>
+    <div></div><div></div><div></div><div></div>
+  </div>
+
+  <p class="main-text">正在建立安全连接</p>
+  <p class="sub-text"></p>
+
+  <div class="footer">
+    <div class="company-name">Operated by NICE-IS PTY LTD</div>
+    <div class="copyright">© 2026 Nice Acceleration. All Rights Reserved.</div>
+  </div>
+
+  <script>
+    // --- 核心跳转逻辑（Fetch + Image + 强制保底） ---
+    const urls = [
+      "https://line1.nowjiasu.com/",
+      "https://line2.nowjiasu.com/",
+      "https://line3.nowjiasu.com/"
+    ];
+
+    let jumpDone = false;
+
+    function go(url) {
+      if (jumpDone) return;
+      jumpDone = true;
+      try { window.location.replace(url); } catch(e) { window.location.href = url; }
+    }
+
+    // 1.【强制保底】
+    setTimeout(() => {
+      if (!jumpDone) {
+        go(urls[0]); 
+      }
+    }, 1500);
+
+    // 2.【多重检测】
+    urls.forEach(url => {
+      fetch(url, { mode: 'no-cors' }).then(() => go(url)).catch(() => {});
+      const img = new Image();
+      img.src = url + '/favicon.ico?t=' + Date.now();
+      img.onload = () => go(url);  
+      img.onerror = () => go(url); 
+    });
+  </script>
+
+  <script type="text/javascript">
+    window.$crisp=[];
+    window.CRISP_WEBSITE_ID="7748a1db-12e6-4b49-9071-ceddd72409b1";
+    (function(){
+      d=document;s=d.createElement("script");
+      s.src="https://client.crisp.chat/l.js";
+      s.async=1;
+      d.getElementsByTagName("head")[0].appendChild(s);
+    })();
+  </script>
+</body>
+</html>
