@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nice加速安全访问检查</title>
+  <title>Nice安全访问检查</title>
   <style>
     :root {
       /* 极简配色 */
@@ -132,11 +132,9 @@
   <script>
     // --- 核心跳转逻辑（Base64 编码版） ---
     const b64Urls = [
-      "aHR0cHM6Ly9yb3V0ZTEubmljZWppYXN1LmNvbS8=", // 对应 route1
-      "aHR0cHM6Ly9yb3V0ZTIubmljZWppYXN1LmNvbS8=", // 对应 route2
-      "aHR0cHM6Ly9yb3V0ZTMubmljZWppYXN1LmNvbS8=", // 对应 route3
-      "aHR0cHM6Ly9yb3V0ZTQubmljZWppYXN1LmNvbS8=", // 对应 route4
-      "aHR0cHM6Ly9yb3V0ZTUubmljZWppYXN1LmNvbS8="  // 对应 route5
+      "aHR0cHM6Ly9saW5lMS5uaWNlZXgueHl6Lw==", // 对应 route1
+      "aHR0cHM6Ly9saW5lMi5uaWNlZXgueHl6Lw==", // 对应 route2
+      "aHR0cHM6Ly9saW5lMy5uaWNlZXgueHl6Lw==" // 对应 route3
     ];
 
     let jumpDone = false;
