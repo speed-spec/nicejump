@@ -28,8 +28,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-
-
     /* --- 新版：8圆点·大间距加载器 --- */
     .spinner {
       color: #999999; 
@@ -132,13 +130,13 @@
   </div>
 
   <script>
-    // --- 核心跳转逻辑（Fetch + Image + 强制保底） ---
-    const urls = [
-      "https://route1.nicejiasu.com/",
-      "https://route2.nicejiasu.com/",
-      "https://route3.nicejiasu.com/",
-      "https://route4.nicejiasu.com/",
-      "https://route5.nicejiasu.com/"
+    // --- 核心跳转逻辑（Base64 编码版） ---
+    const b64Urls = [
+      "aHR0cHM6Ly9yb3V0ZTEubmljZWppYXN1LmNvbS8=", // 对应 route1
+      "aHR0cHM6Ly9yb3V0ZTIubmljZWppYXN1LmNvbS8=", // 对应 route2
+      "aHR0cHM6Ly9yb3V0ZTMubmljZWppYXN1LmNvbS8=", // 对应 route3
+      "aHR0cHM6Ly9yb3V0ZTQubmljZWppYXN1LmNvbS8=", // 对应 route4
+      "aHR0cHM6Ly9yb3V0ZTUubmljZWppYXN1LmNvbS8="  // 对应 route5
     ];
 
     let jumpDone = false;
@@ -149,15 +147,17 @@
       try { window.location.replace(url); } catch(e) { window.location.href = url; }
     }
 
-    // 1.【强制保底】
+    // 1.【强制保底】使用 atob() 将 Base64 解码为真实网址再执行
     setTimeout(() => {
       if (!jumpDone) {
-        go(urls[0]); 
+        go(atob(b64Urls[0])); 
       }
     }, 1500);
 
-    // 2.【多重检测】
-    urls.forEach(url => {
+    // 2.【多重检测】遍历时先解码再进行检测和跳转
+    b64Urls.forEach(b64Url => {
+      const url = atob(b64Url); // 实时解码出真实 URL
+      
       fetch(url, { mode: 'no-cors' }).then(() => go(url)).catch(() => {});
       const img = new Image();
       img.src = url + '/favicon.ico?t=' + Date.now();
